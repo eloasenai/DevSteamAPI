@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="css/style.css" />
+    <title>HTML Dinâmica com JavaScript</title>
+  </head>
+  <body>
+    <h1>Trabalhando com botões em HTML</h1>
+    <div id="lampada"></div>
+    <div id="botoes-lampada">
+      <button onclick="ligarVerde()">verde</button>
+      <button onclick="ligarvermelho()">vermelho</button>
+      <button onclick="ligarazul()">azul</button>
+      <button onclick="ligaramarelo()">amarelo</button>
+      <button onclick="desligar()">desligar</button>
+    </div>
+    <hr />
+
+    <h1>Trabalhando com conteudo</h1>
+    <div id="conteudo">...</div>
+    <button id="btnfrase" onclick="trocarfrase()">trocar frase</button>
+    <hr />
+
+    <h1>Trabalhando validações em formularios</h1>
+    <form id="frmExemplo" nome="frmExemplo">
+      <input
+        type="text"
+        id="txtnome"
+        nome="txtnome"
+        placeholder="digite seu nome"
+      />
+      <input
+        type="text"
+        id="txtidade"
+        nome="txtidade"
+        placeholder="digite sua idade"
+      />
+      <button id="btnvalidar" onclick="validar()">validar</button>
+    </form>
+    <hr />
+  </body>
+  <!-- TAG de Comentario em HTML -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="js/script.js"></script>
+</html>

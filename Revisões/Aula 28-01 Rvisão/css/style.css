@@ -1,0 +1,67 @@
+body {
+  padding: 0;
+  margin: 0;
+  background-color: darkgray;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#lampada {
+  width: 100px;
+  height: 100px;
+  background-color: white;
+  border-radius: 50%;
+  margin-bottom: 20px;
+}
+
+#botoes-lampada {
+  display: flex;
+  gap: 10px;
+  margin: 30px 0px;
+}
+
+#botoes-lampada button {
+  margin: 0px 10px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+#botoes-lampada button:hover {
+  background-color: #969696;
+}
+
+hr {
+  width: 100%;
+  margin: 20px 0px;
+}
+
+/*****************************************************************/
+
+#conteudo {
+  background-color: #fff;
+  width: 80%;
+  padding: 10px auto;
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 48px;
+}
+
+#btnfrase {
+  width: 100px;
+  padding: 5px;
+  margin: 0px 10px;
+}
+
+/************************************************************************/
+#frmExemplo input{
+    padding: 5px;
+    margin: 5px;
+}
+#frmExemplo button{
+    padding: 5px;
+    margin: 5px;
+}

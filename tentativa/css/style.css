@@ -1,0 +1,13 @@
+body{
+    background-color:darkblue;
+    font-family: Arial, sans-serif;
+    margin: 10px;
+    padding: 10px;
+   align-items: center;
+}
+.area-grafico{
+    height: 450px;
+    margin-bottom: 50px;
+    align-items: center;
+
+}

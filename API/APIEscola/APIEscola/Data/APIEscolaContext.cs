@@ -26,5 +26,6 @@ namespace APIEscola.Data
             modelBuilder.Entity<Turma>().ToTable("Turmas");
 
         }
+        public DbSet<APIEscola.Models.Matricula> Matricula { get; set; } = default!;
     }
 }

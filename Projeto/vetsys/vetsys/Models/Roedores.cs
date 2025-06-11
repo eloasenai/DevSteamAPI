@@ -2,8 +2,8 @@
 {
     public class Roedores
     {
-        public int Id { get; set; }
-        public string Racao { get; set; }
+        public Guid RoedoresId { get; set; }
+        public decimal Racao { get; set; }
         public string Petisco { get; set; }
         public string Acessorio { get; set; }
         public decimal Preco { get; set; }

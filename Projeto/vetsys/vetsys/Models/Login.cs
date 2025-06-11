@@ -4,7 +4,7 @@ namespace vetsys.Models
 {
     public class Login
     {
-        public int Id { get; set; }
+        public Guid LoginId { get; set; }
 
         [Required]
         [EmailAddress]

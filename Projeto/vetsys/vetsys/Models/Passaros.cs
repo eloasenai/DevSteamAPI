@@ -2,7 +2,7 @@
 {
     public class Passaros
     {
-        public int Id { get; set; }
+        public Guid PassarosId { get; set; }
         public string Racao { get; set; }
         public string Brinquedo { get; set; }
         public string Acessorio { get; set; }

@@ -5,54 +5,54 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProjetoApi.Models;
 using vetsys.Data;
+using vetsys.Models;
 
 namespace vetsys.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CachorrosController : ControllerBase
+    public class ProdutosController : ControllerBase
     {
         private readonly vetsysContext _context;
 
-        public CachorrosController(vetsysContext context)
+        public ProdutosController(vetsysContext context)
         {
             _context = context;
         }
 
-        // GET: api/Cachorros
+        // GET: api/Produtos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cachorro>>> GetCachorro()
+        public async Task<ActionResult<IEnumerable<Produtos>>> GetProduto()
         {
-            return await _context.Cachorro.ToListAsync();
+            return await _context.Produto.ToListAsync();
         }
 
-        // GET: api/Cachorros/5
+        // GET: api/Produtos/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cachorro>> GetCachorro(Guid id)
+        public async Task<ActionResult<Produtos>> GetProdutos(Guid id)
         {
-            var cachorro = await _context.Cachorro.FindAsync(id);
+            var produtos = await _context.Produto.FindAsync(id);
 
-            if (cachorro == null)
+            if (produtos == null)
             {
                 return NotFound();
             }
 
-            return cachorro;
+            return produtos;
         }
 
-        // PUT: api/Cachorros/5
+        // PUT: api/Produtos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCachorro(Guid id, Cachorro cachorro)
+        public async Task<IActionResult> PutProdutos(Guid id, Produtos produtos)
         {
-            if (id != cachorro.CachorroId)
+            if (id != produtos.ProdutosId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(cachorro).State = EntityState.Modified;
+            _context.Entry(produtos).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace vetsys.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CachorroExists(id))
+                if (!ProdutosExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace vetsys.Controllers
             return NoContent();
         }
 
-        // POST: api/Cachorros
+        // POST: api/Produtos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Cachorro>> PostCachorro(Cachorro cachorro)
+        public async Task<ActionResult<Produtos>> PostProdutos(Produtos produtos)
         {
-            _context.Cachorro.Add(cachorro);
+            _context.Produto.Add(produtos);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCachorro", new { id = cachorro.CachorroId }, cachorro);
+            return CreatedAtAction("GetProdutos", new { id = produtos.ProdutosId }, produtos);
         }
 
-        // DELETE: api/Cachorros/5
+        // DELETE: api/Produtos/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCachorro(Guid id)
+        public async Task<IActionResult> DeleteProdutos(Guid id)
         {
-            var cachorro = await _context.Cachorro.FindAsync(id);
-            if (cachorro == null)
+            var produtos = await _context.Produto.FindAsync(id);
+            if (produtos == null)
             {
                 return NotFound();
             }
 
-            _context.Cachorro.Remove(cachorro);
+            _context.Produto.Remove(produtos);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CachorroExists(Guid id)
+        private bool ProdutosExists(Guid id)
         {
-            return _context.Cachorro.Any(e => e.CachorroId == id);
+            return _context.Produto.Any(e => e.ProdutosId == id);
         }
     }
 }

@@ -1,76 +1,108 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ProjetoApi.Models;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ProjetoApi.Models;
+using vetsys.Data;
 
-namespace ProjetoApi.Controllers
+namespace vetsys.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class PassarosController : ControllerBase
     {
-        private static List<Passaros> passaros = new List<Passaros>
-        {
-            new Passaros
-            {
-                Id = 1,
-                Racao = "Ração Vitakraft",
-                Brinquedo = "Espelho Colorido",
-                Acessorio = "Poleiro de Madeira",
-                Preco = 25.90m,
-                IngredienteOuSabor = "Mistura de sementes",
-                Descricao = "Ração balanceada para pássaros pequenos. Brinquedo e acessório para diversão e conforto.",
-                Tamanho = "500g",
-                Idade = "Adulto"
-            },
-            new Passaros
-            {
-                Id = 2,
-                Racao = "Ração Periquito",
-                Brinquedo = "Sino de Metal",
-                Acessorio = "Gaiola Pequena",
-                Preco = 19.90m,
-                IngredienteOuSabor = "Mistura especial para periquitos",
-                Descricao = "Alimento específico para periquitos. Brinquedo para estímulo e gaiola confortável.",
-                Tamanho = "1kg",
-                Idade = "Filhote"
-            },
-            new Passaros
-            {
-                Id = 3,
-                Racao = "Ração Papagaio",
-                Brinquedo = "Corda Colorida",
-                Acessorio = "Balanço de Corda",
-                Preco = 35.90m,
-                IngredienteOuSabor = "Mistura tropical",
-                Descricao = "Ração nutritiva para papagaios. Brinquedo e acessório para enriquecimento ambiental.",
-                Tamanho = "700g",
-                Idade = "Adulto"
-            }
-        };
+        private readonly vetsysContext _context;
 
+        public PassarosController(vetsysContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/Passaros
         [HttpGet]
-        public ActionResult<IEnumerable<Passaros>> GetTodos()
+        public async Task<ActionResult<IEnumerable<Passaros>>> GetPassaros()
         {
-            return Ok(passaros);
+            return await _context.Passaros.ToListAsync();
         }
 
-        [HttpGet("racoes")]
-        public ActionResult<IEnumerable<string>> GetRacoes()
+        // GET: api/Passaros/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Passaros>> GetPassaros(Guid id)
         {
-            return Ok(passaros.Select(p => p.Racao).Distinct());
+            var passaros = await _context.Passaros.FindAsync(id);
+
+            if (passaros == null)
+            {
+                return NotFound();
+            }
+
+            return passaros;
         }
 
-        [HttpGet("brinquedos")]
-        public ActionResult<IEnumerable<string>> GetBrinquedos()
+        // PUT: api/Passaros/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutPassaros(Guid id, Passaros passaros)
         {
-            return Ok(passaros.Select(p => p.Brinquedo).Distinct());
+            if (id != passaros.PassarosId)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(passaros).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!PassarosExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        [HttpGet("acessorios")]
-        public ActionResult<IEnumerable<string>> GetAcessorios()
+        // POST: api/Passaros
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Passaros>> PostPassaros(Passaros passaros)
         {
-            return Ok(passaros.Select(p => p.Acessorio).Distinct());
+            _context.Passaros.Add(passaros);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetPassaros", new { id = passaros.PassarosId }, passaros);
+        }
+
+        // DELETE: api/Passaros/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeletePassaros(Guid id)
+        {
+            var passaros = await _context.Passaros.FindAsync(id);
+            if (passaros == null)
+            {
+                return NotFound();
+            }
+
+            _context.Passaros.Remove(passaros);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool PassarosExists(Guid id)
+        {
+            return _context.Passaros.Any(e => e.PassarosId == id);
         }
     }
 }

@@ -30,7 +30,7 @@ namespace vetsys.Controllers
 
         // GET: api/Cadastros/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cadastro>> GetCadastro(int id)
+        public async Task<ActionResult<Cadastro>> GetCadastro(Guid id)
         {
             var cadastro = await _context.Cadastro.FindAsync(id);
 
@@ -45,9 +45,9 @@ namespace vetsys.Controllers
         // PUT: api/Cadastros/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCadastro(int id, Cadastro cadastro)
+        public async Task<IActionResult> PutCadastro(Guid id, Cadastro cadastro)
         {
-            if (id != cadastro.Id)
+            if (id != cadastro.CadastroId)
             {
                 return BadRequest();
             }
@@ -81,12 +81,12 @@ namespace vetsys.Controllers
             _context.Cadastro.Add(cadastro);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCadastro", new { id = cadastro.Id }, cadastro);
+            return CreatedAtAction("GetCadastro", new { id = cadastro.CadastroId }, cadastro);
         }
 
         // DELETE: api/Cadastros/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCadastro(int id)
+        public async Task<IActionResult> DeleteCadastro(Guid id)
         {
             var cadastro = await _context.Cadastro.FindAsync(id);
             if (cadastro == null)
@@ -100,9 +100,9 @@ namespace vetsys.Controllers
             return NoContent();
         }
 
-        private bool CadastroExists(int id)
+        private bool CadastroExists(Guid id)
         {
-            return _context.Cadastro.Any(e => e.Id == id);
+            return _context.Cadastro.Any(e => e.CadastroId == id);
         }
     }
 }

@@ -1,32 +1,108 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using vetsys.Models;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using vetsys.Data;
+using vetsys.Models;
 
 namespace vetsys.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class LoginController : ControllerBase
+    [ApiController]
+    public class LoginsController : ControllerBase
     {
-        // Simulação de base de dados (poderia ser substituído por um banco real)
-        private static List<Cadastro> usuarios = new List<Cadastro>
-        {
-            new Cadastro { Nome = "Ana", Sobrenome = "Silva", Email = "ana@email.com", Senha = "123456", ConfirmarSenha = "123456" }
-        };
+        private readonly vetsysContext _context;
 
+        public LoginsController(vetsysContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/Logins
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Login>>> GetLogin()
+        {
+            return await _context.Login.ToListAsync();
+        }
+
+        // GET: api/Logins/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Login>> GetLogin(Guid id)
+        {
+            var login = await _context.Login.FindAsync(id);
+
+            if (login == null)
+            {
+                return NotFound();
+            }
+
+            return login;
+        }
+
+        // PUT: api/Logins/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutLogin(Guid id, Login login)
+        {
+            if (id != login.LoginId)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(login).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LoginExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/Logins
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult Login([FromBody] Login login)
+        public async Task<ActionResult<Login>> PostLogin(Login login)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            _context.Login.Add(login);
+            await _context.SaveChangesAsync();
 
-            var usuario = usuarios.FirstOrDefault(u => u.Email == login.Email && u.Senha == login.Senha);
+            return CreatedAtAction("GetLogin", new { id = login.LoginId }, login);
+        }
 
-            if (usuario == null)
-                return Unauthorized("E-mail ou senha inválidos.");
+        // DELETE: api/Logins/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLogin(Guid id)
+        {
+            var login = await _context.Login.FindAsync(id);
+            if (login == null)
+            {
+                return NotFound();
+            }
 
-            return Ok($"Bem-vindo(a), {usuario.Nome}!");
+            _context.Login.Remove(login);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool LoginExists(Guid id)
+        {
+            return _context.Login.Any(e => e.LoginId == id);
         }
     }
 }

@@ -5,54 +5,54 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProjetoApi.Models;
 using vetsys.Data;
+using vetsys.Models;
 
 namespace vetsys.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CachorrosController : ControllerBase
+    public class AutomaticosController : ControllerBase
     {
         private readonly vetsysContext _context;
 
-        public CachorrosController(vetsysContext context)
+        public AutomaticosController(vetsysContext context)
         {
             _context = context;
         }
 
-        // GET: api/Cachorros
+        // GET: api/Automaticos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cachorro>>> GetCachorro()
+        public async Task<ActionResult<IEnumerable<Automatico>>> GetAutomatico()
         {
-            return await _context.Cachorro.ToListAsync();
+            return await _context.Automatico.ToListAsync();
         }
 
-        // GET: api/Cachorros/5
+        // GET: api/Automaticos/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cachorro>> GetCachorro(Guid id)
+        public async Task<ActionResult<Automatico>> GetAutomatico(Guid id)
         {
-            var cachorro = await _context.Cachorro.FindAsync(id);
+            var automatico = await _context.Automatico.FindAsync(id);
 
-            if (cachorro == null)
+            if (automatico == null)
             {
                 return NotFound();
             }
 
-            return cachorro;
+            return automatico;
         }
 
-        // PUT: api/Cachorros/5
+        // PUT: api/Automaticos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCachorro(Guid id, Cachorro cachorro)
+        public async Task<IActionResult> PutAutomatico(Guid id, Automatico automatico)
         {
-            if (id != cachorro.CachorroId)
+            if (id != automatico.AutomaticoId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(cachorro).State = EntityState.Modified;
+            _context.Entry(automatico).State = EntityState.Modified;
 
             try
             {
@@ -60,7 +60,7 @@ namespace vetsys.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!CachorroExists(id))
+                if (!AutomaticoExists(id))
                 {
                     return NotFound();
                 }
@@ -73,36 +73,36 @@ namespace vetsys.Controllers
             return NoContent();
         }
 
-        // POST: api/Cachorros
+        // POST: api/Automaticos
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Cachorro>> PostCachorro(Cachorro cachorro)
+        public async Task<ActionResult<Automatico>> PostAutomatico(Automatico automatico)
         {
-            _context.Cachorro.Add(cachorro);
+            _context.Automatico.Add(automatico);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCachorro", new { id = cachorro.CachorroId }, cachorro);
+            return CreatedAtAction("GetAutomatico", new { id = automatico.AutomaticoId }, automatico);
         }
 
-        // DELETE: api/Cachorros/5
+        // DELETE: api/Automaticos/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCachorro(Guid id)
+        public async Task<IActionResult> DeleteAutomatico(Guid id)
         {
-            var cachorro = await _context.Cachorro.FindAsync(id);
-            if (cachorro == null)
+            var automatico = await _context.Automatico.FindAsync(id);
+            if (automatico == null)
             {
                 return NotFound();
             }
 
-            _context.Cachorro.Remove(cachorro);
+            _context.Automatico.Remove(automatico);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool CachorroExists(Guid id)
+        private bool AutomaticoExists(Guid id)
         {
-            return _context.Cachorro.Any(e => e.CachorroId == id);
+            return _context.Automatico.Any(e => e.AutomaticoId == id);
         }
     }
 }

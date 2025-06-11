@@ -1,100 +1,108 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using ProjetoApi.Models;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ProjetoApi.Models;
+using vetsys.Data;
 
-namespace ProjetoApi.Controllers
+namespace vetsys.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class GatoController : ControllerBase
+    [ApiController]
+    public class GatosController : ControllerBase
     {
-        private static List<Gato> gatos = new List<Gato>
-        {
-            new Gato
-            {
-                Id = 1,
-                Racao = "Ração Whiskas",
-                Petisco = "Petisco Dreamies",
-                Areia = "Areia Pipicat",
-                Preco = 45.90m,
-                IngredienteOuSabor = "Sabor Carne",
-                Descricao = "Ração seca balanceada para gatos adultos. Rica em fibras e proteínas.",
-                Tamanho = "1kg",
-                Idade = "Adulto"
-            },
-            new Gato
-            {
-                Id = 2,
-                Racao = "Ração Golden",
-                Petisco = "Petisco Whiskas",
-                Areia = "Areia Granulado de Madeira",
-                Preco = 52.50m,
-                IngredienteOuSabor = "Sabor Frango",
-                Descricao = "Ração premium com ingredientes naturais. Ideal para gatos exigentes.",
-                Tamanho = "3kg",
-                Idade = "Filhote"
-            },
-            new Gato
-            {
-                Id = 3,
-                Racao = "Ração Premier",
-                Petisco = "Petisco Fancy Feast",
-                Areia = "Areia Sílica Azul",
-                Preco = 67.80m,
-                IngredienteOuSabor = "Sabor Peixe",
-                Descricao = "Alimento completo com ômegas e antioxidantes. Alta digestibilidade.",
-                Tamanho = "2kg",
-                Idade = "Sênior"
-            },
-            new Gato
-            {
-                Id = 4,
-                Racao = "Ração Royal Canin",
-                Petisco = "Petisco Pedigree",
-                Areia = "Areia Natural",
-                Preco = 89.99m,
-                IngredienteOuSabor = "Sabor Salmão",
-                Descricao = "Fórmula veterinária para gatos sensíveis. Indicado para digestão delicada.",
-                Tamanho = "1.5kg",
-                Idade = "Adulto"
-            },
-            new Gato
-            {
-                Id = 5,
-                Racao = "Ração Pro Plan",
-                Petisco = "Petisco Hill's",
-                Areia = "Areia de Argila",
-                Preco = 78.30m,
-                IngredienteOuSabor = "Sabor Frango e Arroz",
-                Descricao = "Nutrição avançada com prebióticos. Indicado para todas as idades.",
-                Tamanho = "4kg",
-                Idade = "Todas as idades"
-            }
-        };
+        private readonly vetsysContext _context;
 
+        public GatosController(vetsysContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/Gatos
         [HttpGet]
-        public ActionResult<IEnumerable<Gato>> GetTodos()
+        public async Task<ActionResult<IEnumerable<Gato>>> GetGato()
         {
-            return Ok(gatos);
+            return await _context.Gato.ToListAsync();
         }
 
-        [HttpGet("racoes")]
-        public ActionResult<IEnumerable<string>> GetRacoes()
+        // GET: api/Gatos/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Gato>> GetGato(Guid id)
         {
-            return Ok(gatos.Select(g => g.Racao).Distinct());
+            var gato = await _context.Gato.FindAsync(id);
+
+            if (gato == null)
+            {
+                return NotFound();
+            }
+
+            return gato;
         }
 
-        [HttpGet("petiscos")]
-        public ActionResult<IEnumerable<string>> GetPetiscos()
+        // PUT: api/Gatos/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutGato(Guid id, Gato gato)
         {
-            return Ok(gatos.Select(g => g.Petisco).Distinct());
+            if (id != gato.GatoId)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(gato).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!GatoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        [HttpGet("areias")]
-        public ActionResult<IEnumerable<string>> GetAreias()
+        // POST: api/Gatos
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Gato>> PostGato(Gato gato)
         {
-            return Ok(gatos.Select(g => g.Areia).Distinct());
+            _context.Gato.Add(gato);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetGato", new { id = gato.GatoId }, gato);
+        }
+
+        // DELETE: api/Gatos/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteGato(Guid id)
+        {
+            var gato = await _context.Gato.FindAsync(id);
+            if (gato == null)
+            {
+                return NotFound();
+            }
+
+            _context.Gato.Remove(gato);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool GatoExists(Guid id)
+        {
+            return _context.Gato.Any(e => e.GatoId == id);
         }
     }
 }

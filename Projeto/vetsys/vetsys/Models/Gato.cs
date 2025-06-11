@@ -2,7 +2,7 @@
 {
     public class Gato
     {
-        public int Id { get; set; }
+        public Guid GatoId { get; set; }
         public string Racao { get; set; }
         public string Petisco { get; set; }
         public string Areia { get; set; }

@@ -4,7 +4,7 @@ namespace Vetsys.Models
 {
     public class Oferta
     {
-        public int Id { get; set; }
+        public Guid OfertaId { get; set; }
         public string Remedio { get; set; }
         public string Coleira { get; set; }
         public string Petisco { get; set; }

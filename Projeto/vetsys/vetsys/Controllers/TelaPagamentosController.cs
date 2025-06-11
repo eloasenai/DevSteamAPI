@@ -1,63 +1,108 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using vetsys.Models;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using vetsys.Data;
+using vetsys.Models;
 
 namespace vetsys.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
-    public class TelaPagamentoController : ControllerBase
+    [ApiController]
+    public class TelaPagamentosController : ControllerBase
     {
-        private static List<TelaPagamento> pagamentos = new List<TelaPagamento>();
+        private readonly vetsysContext _context;
 
+        public TelaPagamentosController(vetsysContext context)
+        {
+            _context = context;
+        }
+
+        // GET: api/TelaPagamentos
         [HttpGet]
-        public ActionResult<IEnumerable<TelaPagamento>> GetPagamentos()
+        public async Task<ActionResult<IEnumerable<TelaPagamento>>> GetTelaPagamento()
         {
-            return Ok(pagamentos);
+            return await _context.TelaPagamento.ToListAsync();
         }
 
+        // GET: api/TelaPagamentos/5
         [HttpGet("{id}")]
-        public ActionResult<TelaPagamento> GetPagamento(int id)
+        public async Task<ActionResult<TelaPagamento>> GetTelaPagamento(Guid id)
         {
-            var pagamento = pagamentos.FirstOrDefault(p => p.Id == id);
-            if (pagamento == null) return NotFound();
-            return Ok(pagamento);
+            var telaPagamento = await _context.TelaPagamento.FindAsync(id);
+
+            if (telaPagamento == null)
+            {
+                return NotFound();
+            }
+
+            return telaPagamento;
         }
 
-        [HttpPost]
-        public ActionResult<TelaPagamento> CriarPagamento([FromBody] TelaPagamento novoPagamento)
-        {
-            novoPagamento.Id = pagamentos.Count + 1;
-            novoPagamento.Status = "Pendente";
-            novoPagamento.DataPagamento = DateTime.Now;
-
-            pagamentos.Add(novoPagamento);
-            return CreatedAtAction(nameof(GetPagamento), new { id = novoPagamento.Id }, novoPagamento);
-        }
-
+        // PUT: api/TelaPagamentos/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public IActionResult AtualizarPagamento(int id, [FromBody] TelaPagamento pagamentoAtualizado)
+        public async Task<IActionResult> PutTelaPagamento(Guid id, TelaPagamento telaPagamento)
         {
-            var pagamento = pagamentos.FirstOrDefault(p => p.Id == id);
-            if (pagamento == null) return NotFound();
+            if (id != telaPagamento.TelaPagamentoId)
+            {
+                return BadRequest();
+            }
 
-            pagamento.Valor = pagamentoAtualizado.Valor;
-            pagamento.MetodoPagamento = pagamentoAtualizado.MetodoPagamento;
-            pagamento.Status = pagamentoAtualizado.Status;
-            pagamento.DataPagamento = pagamentoAtualizado.DataPagamento;
+            _context.Entry(telaPagamento).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TelaPagamentoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeletarPagamento(int id)
+        // POST: api/TelaPagamentos
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<TelaPagamento>> PostTelaPagamento(TelaPagamento telaPagamento)
         {
-            var pagamento = pagamentos.FirstOrDefault(p => p.Id == id);
-            if (pagamento == null) return NotFound();
+            _context.TelaPagamento.Add(telaPagamento);
+            await _context.SaveChangesAsync();
 
-            pagamentos.Remove(pagamento);
+            return CreatedAtAction("GetTelaPagamento", new { id = telaPagamento.TelaPagamentoId }, telaPagamento);
+        }
+
+        // DELETE: api/TelaPagamentos/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTelaPagamento(Guid id)
+        {
+            var telaPagamento = await _context.TelaPagamento.FindAsync(id);
+            if (telaPagamento == null)
+            {
+                return NotFound();
+            }
+
+            _context.TelaPagamento.Remove(telaPagamento);
+            await _context.SaveChangesAsync();
+
             return NoContent();
+        }
+
+        private bool TelaPagamentoExists(Guid id)
+        {
+            return _context.TelaPagamento.Any(e => e.TelaPagamentoId == id);
         }
     }
 }

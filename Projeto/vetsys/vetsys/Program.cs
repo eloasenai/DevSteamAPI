@@ -5,6 +5,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<vetsysContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("vetsysContext") ?? throw new InvalidOperationException("Connection string 'vetsysContext' not found.")));
 
+
+// Adicionar o serviço de CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -14,14 +24,14 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll"); // Habilita o CORS 
 
 app.UseAuthorization();
 

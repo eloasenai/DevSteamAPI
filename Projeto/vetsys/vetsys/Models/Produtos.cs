@@ -1,9 +1,10 @@
 ﻿namespace vetsys.Models
 {
-    public class Pesquisar
+    public class Produtos
     {
-        public int Id { get; set; }
+        public Guid ProdutosId { get; set; }
         public string Nome { get; set; }
+        public string Categoria { get; set; }
         public decimal Preco { get; set; }
     }
 }
